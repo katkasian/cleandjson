@@ -11,12 +11,18 @@ def open_ndjson(ndjson_file):
 
 
 def convert_to_json(ndjson_content):
+    failed = 0
     result = []
+    n_lines = len(ndjson_content.splitlines())
     for ndjson_line in ndjson_content.splitlines():
         if not ndjson_line.strip():
             continue  # ignoring empty lines
-        json_line = json.loads(ndjson_line)
-        result.append(json_line)
+        try:
+            json_line = json.loads(ndjson_line)
+            result.append(json_line)
+        except json.decoder.JSONDecodeError:
+            failed += 1
+    print(f'Processing finished. Successfully processed {n_lines - failed} out of {n_lines} lines of the input file.')
     return result
 
 
